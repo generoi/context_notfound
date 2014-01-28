@@ -1,0 +1,53 @@
+<?php
+
+/**
+ * @file context_notfound.module
+ */
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function context_notfound_ctools_plugin_api($module, $api) {
+  if ($module == 'context' && $api == 'plugins') {
+    return array('version' => 3);
+  }
+}
+
+/**
+ * Implements hook_context_plugins().
+ */
+function context_notfound_context_plugins() {
+  $plugins = array();
+  $plugins['context_notfound_reaction'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'context_notfound'),
+      'file' => 'context_notfound_reaction.inc',
+      'class' => 'context_notfound_reaction',
+      'parent' => 'context_reaction',
+    ),
+  );
+  return $plugins;
+}
+
+/**
+ * Implements hook_context_registry().
+ */
+function context_notfound_context_registry() {
+  return array(
+    'reactions' => array(
+      'context_notfound' => array(
+        'title' => t('Page not found'),
+        'plugin' => 'context_notfound_reaction',
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_context_page_reaction().
+ */
+function context_notfound_context_page_reaction() {
+  if ($plugin = context_get_plugin('reaction', 'context_notfound')) {
+    $plugin->execute();
+  }
+}
